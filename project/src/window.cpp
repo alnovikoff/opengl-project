@@ -2,6 +2,9 @@
 
 #include <iostream>
 
+#include "io/keyboard.h"
+#include "io/mouse.h"
+
 unsigned int Window::window_width = 800;
 unsigned int Window::window_height = 600;
 
@@ -51,16 +54,15 @@ void Window::set_parameters()
 {
     glViewport(0 , 0, window_width, window_height);
     
-    /// HERE IS AN ERROR
     glfwSetFramebufferSizeCallback(window, Window::framebuffer_size_callback);
 
-    //glfwSetKeyCallback(window, Keyboard::key_callback);
+    glfwSetKeyCallback(window, Keyboard::key_callback);
 
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-    //glfwSetCursorPosCallback(window, Mouse::cursor_position_callback);
-    //glfwSetMouseButtonCallback(window, Mouse::mouse_button_callback);
-    //glfwSetScrollCallback(window, Mouse::mouse_wheel_callback);
+    glfwSetCursorPosCallback(window, Mouse::cursor_position_callback);
+    glfwSetMouseButtonCallback(window, Mouse::mouse_button_callback);
+    glfwSetScrollCallback(window, Mouse::mouse_wheel_callback);
 }
 
 void Window::update()

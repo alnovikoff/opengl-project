@@ -16,8 +16,17 @@ set(SOURCES
 
     src/project.cpp
     src/window.cpp
+
     src/render_util/shader.cpp
     src/render_util/texture.cpp
+    src/render_util/camera.cpp
+
+    src/render/mesh.cpp
+    src/render/model.cpp
+    src/render/shadowmap.cpp
+
+    src/io/keyboard.cpp
+    src/io/mouse.cpp
 )
 
 add_library(${PROJECT_NAME} SHARED ${SOURCES})

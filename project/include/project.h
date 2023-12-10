@@ -11,6 +11,7 @@ class PROJECT_API Project
 public:
     Project() {}
     void run();
+    void process_input(double dt);
 
 private:
     Window window;
