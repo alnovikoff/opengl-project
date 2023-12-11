@@ -7,3 +7,6 @@
 [submodule "project/thirdparty/assimp"]
 	path = project/thirdparty/assimp
 	url = https://github.com/assimp/assimp
+[submodule "project/thirdparty/openal-soft"]
+	path = project/thirdparty/openal-soft
+	url = https://github.com/kcat/openal-soft

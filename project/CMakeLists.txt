@@ -5,10 +5,18 @@ set(CMAKE_CXX_STANDARD 17)
 
 find_package(OpenGL REQUIRED)
 
+# if(OPENGL_FOUND)
+#     message("OpenGL Correctly Found")
+#     include_directories(${OPENGL_INCLUDE_DIRS})
+#     link_libraries(${OPENGL_LIBRARIES})
+# endif()
+
+
 # add external libraries
 add_subdirectory(thirdparty/glm)
 add_subdirectory(thirdparty/glfw)
 add_subdirectory(thirdparty/assimp)
+add_subdirectory(thirdparty/openal-soft)
 
 set(SOURCES
     src/other/glad.c
@@ -27,6 +35,8 @@ set(SOURCES
 
     src/io/keyboard.cpp
     src/io/mouse.cpp
+
+    src/audio/audio_device.cpp
 )
 
 add_library(${PROJECT_NAME} SHARED ${SOURCES})
@@ -39,8 +49,8 @@ target_include_directories(${PROJECT_NAME}
         glfw
         glm
         assimp
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/openal-soft/include>
     PRIVATE
-
 )
 
 target_link_libraries(${PROJECT_NAME}
@@ -48,6 +58,6 @@ target_link_libraries(${PROJECT_NAME}
         glfw
         glm
         assimp
+        OpenAL
     PRIVATE
-
 )
