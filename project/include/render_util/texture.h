@@ -13,9 +13,9 @@ public:
 	void apply_texture();
 
 private:
-	int width; 
-	int height; 
-	int nChannels;
+	int _width; 
+	int _height; 
+	int _n_channels;
 };
 
 #endif // TEXTURE_H

@@ -37,6 +37,7 @@ public:
 		model_matrix = matrix;
 	}
 	
+	void set_position(const glm::vec3& position);
 	glm::vec3 get_position();
 	void draw(Shader &shader);	
 	void update_model_matrix();

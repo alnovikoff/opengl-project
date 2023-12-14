@@ -1,28 +1,28 @@
 #include "render_util/camera.h"
 
 Camera::Camera(glm::vec3 position) 
-			: cameraPos(position),
-			worldUp(glm::vec3(0.0f, 1.0f, 0.0f)),
-			yaw(-90.0f),
-			pitch(0.0f),
-			speed(8.5f),
-			zoom(45.0f)
+			: _camera_pos(position),
+			_world_up(glm::vec3(0.0f, 1.0f, 0.0f)),
+			_yaw(-90.0f),
+			_pitch(0.0f),
+			_speed(8.5f),
+			_zoom(45.0f)
 {
 	update_camera_vectors();
 }
 
 void Camera::update_camera_direction(double dx, double dy)
 {
-	yaw += dx;
-	pitch += dy;
+	_yaw += dx;
+	_pitch += dy;
 
-	if (pitch > 89.0f)
+	if (_pitch > 89.0f)
 	{
-		pitch = 89.0f;
+		_pitch = 89.0f;
 	}
-	else if(pitch < -89.0f)
+	else if(_pitch < -89.0f)
 	{
-		pitch = -89.0f;
+		_pitch = -89.0f;
 	}
 
 	update_camera_vectors();
@@ -30,60 +30,60 @@ void Camera::update_camera_direction(double dx, double dy)
 
 void Camera::update_camera_position(CameraDirection dir, double dt)
 {
-	float velocity = (float)dt * speed;
+	float velocity = (float)dt * _speed;
 
 	switch(dir)
 	{
 		case CameraDirection::FORWARD:
-			cameraPos += cameraFront * velocity;
+			_camera_pos += _camera_front * velocity;
 			break;
 		case CameraDirection::BACKWARD:
-			cameraPos -= cameraFront * velocity;
+			_camera_pos -= _camera_front * velocity;
 			break;
 		case CameraDirection::RIGHT:
-			cameraPos += cameraRight * velocity;
+			_camera_pos += _camera_right * velocity;
 			break;
 		case CameraDirection::LEFT:
-			cameraPos -= cameraRight * velocity;
+			_camera_pos -= _camera_right * velocity;
 			break;
 		case CameraDirection::UP:
-			cameraPos += worldUp * velocity;
+			_camera_pos += _world_up * velocity;
 			break;
 		case CameraDirection::DOWN:
-			cameraPos -= worldUp * velocity;
+			_camera_pos -= _world_up * velocity;
 			break;
 	}
 }
 
 void Camera::update_camera_zoom(double dy)
 {
-	if(zoom >= 1.0f && zoom <= 45.0f)
+	if(_zoom >= 1.0f && _zoom <= 45.0f)
 	{
-		zoom -= dy;
+		_zoom -= dy;
 	}
-	else if(zoom < 1.0f)
+	else if(_zoom < 1.0f)
 	{
-		zoom = 1.0f;
+		_zoom = 1.0f;
 	}
 	else
 	{
-		zoom = 45.0f;
+		_zoom = 45.0f;
 	}
 }
 
 glm::mat4 Camera::get_view_matrix()
 {
-	return glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+	return glm::lookAt(_camera_pos, _camera_pos + _camera_front, _camera_up);
 }
 
 float Camera::get_zoom()
 {
-	return zoom;
+	return _zoom;
 }
 
 glm::vec3 Camera::get_camera_pos()
 {
-	return cameraPos;
+	return _camera_pos;
 }
 
 void Camera::set_direction(glm::vec3 direction)
@@ -91,8 +91,8 @@ void Camera::set_direction(glm::vec3 direction)
     direction = glm::normalize(direction);
 
     // Calculate the new yaw and pitch angles
-    this->yaw = atan2(direction.y, direction.x);
-    this->pitch = asin(direction.z);
+    this->_yaw = atan2(direction.y, direction.x);
+    this->_pitch = asin(direction.z);
 
     // Update the front vector
     this->update_camera_vectors();
@@ -101,11 +101,11 @@ void Camera::set_direction(glm::vec3 direction)
 void Camera::update_camera_vectors()
 {
 	glm::vec3 front;
-	front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-	front.y = sin(glm::radians(pitch));
-	front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+	front.x = cos(glm::radians(_yaw)) * cos(glm::radians(_pitch));
+	front.y = sin(glm::radians(_pitch));
+	front.z = sin(glm::radians(_yaw)) * cos(glm::radians(_pitch));
 
-	cameraFront = glm::normalize(front);
-	cameraRight = glm::normalize(glm::cross(cameraFront, worldUp));
-	cameraUp = glm::normalize(glm::cross(cameraRight, cameraFront));
+	_camera_front = glm::normalize(front);
+	_camera_right = glm::normalize(glm::cross(_camera_front, _world_up));
+	_camera_up = glm::normalize(glm::cross(_camera_right, _camera_front));
 }

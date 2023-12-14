@@ -2,6 +2,7 @@
 #define PROJECT_H
 
 #include <iostream>
+#include <filesystem>
 
 #include "defines.h"
 #include "window.h"
@@ -10,8 +11,11 @@ class PROJECT_API Project
 {
 public:
     Project() {}
-    void run();
+    void run_render();
+    void run_sound();
     void process_input(double dt);
+
+    std::filesystem::path get_asset_path();
 
 private:
     Window window;

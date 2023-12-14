@@ -34,20 +34,20 @@ public:
 
 private:
 
-	glm::vec3 cameraPos;
+	glm::vec3 _camera_pos;
 
-	glm::vec3 cameraFront;
-	glm::vec3 cameraUp;
-	glm::vec3 cameraRight;
+	glm::vec3 _camera_front;
+	glm::vec3 _camera_up;
+	glm::vec3 _camera_right;
 
-	glm::vec3 worldUp;
-	glm::vec3 direction;
+	glm::vec3 _world_up;
+	glm::vec3 _direction;
 
-	float yaw;
-	float pitch;
-	float speed;
-	float sencitivity;
-	float zoom;
+	float _yaw;
+	float _pitch;
+	float _speed;
+	float _sensitivity;
+	float _zoom;
 };
 
 #endif // CAMERA_H

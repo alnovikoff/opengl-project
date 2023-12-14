@@ -17,6 +17,11 @@ void Model::draw(Shader &shader)
   }
 }
 
+void Model::set_position(const glm::vec3& position)
+{
+  model_matrix = glm::translate(glm::mat4(1.0f), position);
+}
+
 glm::vec3 Model::get_position()
 {
   if (!meshes.empty() && !meshes[0].get_vertices().empty())

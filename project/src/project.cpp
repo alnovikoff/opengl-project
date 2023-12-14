@@ -1,6 +1,5 @@
 #include "project.h"
 
-#include <filesystem>
 #include <other/stb/stb_image.h>
 
 #include "render_util/camera.h"
@@ -13,6 +12,9 @@
 #include "render_util/texture.h"
 #include "render/model.h"
 
+#include "sound/sound_device.h"
+#include "sound/sound_buffer.h"
+#include "sound/sound_source.h"
 
 glm::mat4 transform = glm::mat4(1.0f);
 
@@ -21,23 +23,8 @@ float last_frame = 0.0f;
 
 Camera camera(glm::vec3(0.0f, 10.0f, 0.0f));
 
-void Project::run()
+void Project::run_render()
 {
-	// Get the current executable's path
-	std::filesystem::path executablePath = std::filesystem::current_path();
-	// Move up to the project/build/bin directory
-	std::filesystem::path binPath = executablePath.parent_path();
-	// Move up to the project directory
-	std::filesystem::path path = binPath.parent_path();
-	std::filesystem::path projectPath = path.parent_path();
-	// Add your asset folder to the path
-	std::filesystem::path assetPath = projectPath / "project" / "assets";
-
-
-	// glfw setup
-	int success;
-	char infoLog[1024];
-
 	if (!window.init())
 	{
 		std::cout << "Failed to initialize window!" << std::endl;
@@ -48,45 +35,46 @@ void Project::run()
 		std::cout << "Failed to initialize glad" << std::endl;
 		glfwTerminate();
 	}
-	
+
+
 	window.set_parameters();
 	stbi_set_flip_vertically_on_load(true);
 
 	// Компилирование нашей шейдерной программы
-	Shader shader_model((assetPath / "model_vert.glsl").string().c_str(), (assetPath / "model_frag.glsl").string().c_str());
-	Shader shader_env_map((assetPath / "shaders/env_map_vert.glsl").string().c_str(), (assetPath / "shaders/env_map_frag.glsl").string().c_str());
-	Shader shader_window((assetPath / "shaders/window_vert.glsl").string().c_str(), (assetPath / "shaders/window_frag.glsl").string().c_str());
+	Shader shader_model((get_asset_path()  / "shaders/model_vert.glsl").string().c_str(), (get_asset_path()  / "shaders/model_frag.glsl").string().c_str());
+	Shader shader_env_map((get_asset_path()  / "shaders/env_map_vert.glsl").string().c_str(), (get_asset_path()  / "shaders/env_map_frag.glsl").string().c_str());
+	Shader shader_window((get_asset_path()  / "shaders/window_vert.glsl").string().c_str(), (get_asset_path()  / "shaders/window_frag.glsl").string().c_str());
 
 
 	// Загрузка моделей
-	Model ground_model(_strdup((assetPath / "model/ground.obj").string().c_str()));
-	Model pillars_model(_strdup((assetPath / "model/pillars.obj").string().c_str()));
-	Model vehicle_model(_strdup((assetPath / "model/vehicle.obj").string().c_str()));
-	Model vehicle_discs_model(_strdup((assetPath / "model/vehicle_discs.obj").string().c_str()));
-	Model vehicle_windows_model(_strdup((assetPath / "model/vehicle_windows.obj").string().c_str()));
-	Model vehicle_light1_model(_strdup((assetPath / "model/vehicle_light_one.obj").string().c_str()));
-	Model vehicle_light2_model(_strdup((assetPath / "model/vehicle_light_two.obj").string().c_str()));
-	Model wires_model(_strdup((assetPath / "model/wires.obj").string().c_str()));
-	Model lamps_model(_strdup((assetPath / "model/lamps.obj").string().c_str()));
-	Model lamp_light1_model(_strdup((assetPath / "model/lamp_light_one.obj").string().c_str()));
-	Model lamp_light2_model(_strdup((assetPath / "model/lamp_light_two.obj").string().c_str()));
-	Model rock1_model(_strdup((assetPath / "model/rock_1.obj").string().c_str()));
-	Model rock2_model(_strdup((assetPath / "model/rock_2.obj").string().c_str()));
-	Model rock3_model(_strdup((assetPath / "model/rock_3.obj").string().c_str()));
-	Model rock4_model(_strdup((assetPath / "model/rock_4.obj").string().c_str()));
-	Model rock5_model(_strdup((assetPath / "model/rock_5.obj").string().c_str()));
-	Model rock6_model(_strdup((assetPath / "model/rock_6.obj").string().c_str()));
-	Model cactus1_model(_strdup((assetPath / "model/cactus_1.obj").string().c_str()));
-	Model cactus2_model(_strdup((assetPath / "model/cactus_2.obj").string().c_str()));
-	Model cactus3_model(_strdup((assetPath / "model/cactus_3.obj").string().c_str()));
-	Model cactus4_model(_strdup((assetPath / "model/cactus_4.obj").string().c_str()));
-	Model cactus5_model(_strdup((assetPath / "model/cactus_5.obj").string().c_str()));
-	Model cactus6_model(_strdup((assetPath / "model/cactus_6.obj").string().c_str()));
-	Model cactus7_model(_strdup((assetPath / "model/cactus_7.obj").string().c_str()));
-	Model cactus8_model(_strdup((assetPath / "model/cactus_8.obj").string().c_str()));
-	Model scene_model(_strdup((assetPath / "model/scene.obj").string().c_str()));
-	Model ufo_model(_strdup((assetPath / "model/ufo.obj").string().c_str()));
-	Model ufo_light_model(_strdup((assetPath / "model/ufo_light.obj").string().c_str()));
+	Model ground_model(_strdup((get_asset_path()  / "model/ground.obj").string().c_str()));
+	Model pillars_model(_strdup((get_asset_path()  / "model/pillars.obj").string().c_str()));
+	Model vehicle_model(_strdup((get_asset_path()  / "model/vehicle.obj").string().c_str()));
+	Model vehicle_discs_model(_strdup((get_asset_path()  / "model/vehicle_discs.obj").string().c_str()));
+	Model vehicle_windows_model(_strdup((get_asset_path()  / "model/vehicle_windows.obj").string().c_str()));
+	Model vehicle_light1_model(_strdup((get_asset_path()  / "model/vehicle_light_one.obj").string().c_str()));
+	Model vehicle_light2_model(_strdup((get_asset_path()  / "model/vehicle_light_two.obj").string().c_str()));
+	Model wires_model(_strdup((get_asset_path()  / "model/wires.obj").string().c_str()));
+	Model lamps_model(_strdup((get_asset_path()  / "model/lamps.obj").string().c_str()));
+	Model lamp_light1_model(_strdup((get_asset_path()  / "model/lamp_light_one.obj").string().c_str()));
+	Model lamp_light2_model(_strdup((get_asset_path()  / "model/lamp_light_two.obj").string().c_str()));
+	Model rock1_model(_strdup((get_asset_path()  / "model/rock_1.obj").string().c_str()));
+	Model rock2_model(_strdup((get_asset_path()  / "model/rock_2.obj").string().c_str()));
+	Model rock3_model(_strdup((get_asset_path()  / "model/rock_3.obj").string().c_str()));
+	Model rock4_model(_strdup((get_asset_path()  / "model/rock_4.obj").string().c_str()));
+	Model rock5_model(_strdup((get_asset_path()  / "model/rock_5.obj").string().c_str()));
+	Model rock6_model(_strdup((get_asset_path() / "model/rock_6.obj").string().c_str()));
+	Model cactus1_model(_strdup((get_asset_path()  / "model/cactus_1.obj").string().c_str()));
+	Model cactus2_model(_strdup((get_asset_path()  / "model/cactus_2.obj").string().c_str()));
+	Model cactus3_model(_strdup((get_asset_path()  / "model/cactus_3.obj").string().c_str()));
+	Model cactus4_model(_strdup((get_asset_path()  / "model/cactus_4.obj").string().c_str()));
+	Model cactus5_model(_strdup((get_asset_path()  / "model/cactus_5.obj").string().c_str()));
+	Model cactus6_model(_strdup((get_asset_path()  / "model/cactus_6.obj").string().c_str()));
+	Model cactus7_model(_strdup((get_asset_path()  / "model/cactus_7.obj").string().c_str()));
+	Model cactus8_model(_strdup((get_asset_path()  / "model/cactus_8.obj").string().c_str()));
+	Model scene_model(_strdup((get_asset_path()  / "model/scene.obj").string().c_str()));
+	Model ufo_model(_strdup((get_asset_path()  / "model/ufo.obj").string().c_str()));
+	Model ufo_light_model(_strdup((get_asset_path()  / "model/ufo_light.obj").string().c_str()));
 
 
 	//------------------------- SKYBOX
@@ -141,12 +129,12 @@ void Project::run()
 
 	std::string cubemap_face[6] = 
 	{
-		"E:\\MUNI\\ComputerGraphicsAPI\\project\\project\\assets\\skybox\\right.jpg",
-		"E:\\MUNI\\ComputerGraphicsAPI\\project\\project\\assets\\skybox\\left.jpg",
-		"E:\\MUNI\\ComputerGraphicsAPI\\project\\project\\assets\\skybox\\top.jpg",
-		"E:\\MUNI\\ComputerGraphicsAPI\\project\\project\\assets\\skybox\\bottom.jpg",
-		"E:\\MUNI\\ComputerGraphicsAPI\\project\\project\\assets\\skybox\\front.jpg",
-		"E:\\MUNI\\ComputerGraphicsAPI\\project\\project\\assets\\skybox\\back.jpg"
+		_strdup((get_asset_path() / "skybox/right.jpg").string().c_str()),
+		_strdup((get_asset_path() / "skybox/left.jpg").string().c_str()),
+		_strdup((get_asset_path() / "skybox/top.jpg").string().c_str()),
+		_strdup((get_asset_path() / "skybox/bottom.jpg").string().c_str()),
+		_strdup((get_asset_path() / "skybox/front.jpg").string().c_str()),
+		_strdup((get_asset_path() / "skybox/back.jpg").string().c_str()),
 	};
 
 
@@ -191,8 +179,9 @@ void Project::run()
 		}
 	}
 
-	Shader skybox_shader((assetPath / "shaders/skybox_vert.glsl").string().c_str(), (assetPath / "shaders/skybox_frag.glsl").string().c_str());
+	Shader skybox_shader((get_asset_path() / "shaders/skybox_vert.glsl").string().c_str(), (get_asset_path() / "shaders/skybox_frag.glsl").string().c_str());
 	//------------------------- SKYBOX
+	//-------------------------- Dynamic env maping
 	// shader_window.activate();
 	// glUniform1f(glGetUniformLocation(shader_window.id, "alpha"), 0.7f); 
 
@@ -283,15 +272,14 @@ void Project::run()
 
 	// 	// Set the camera's direction
 	// 	camera.set_direction(directions[face]);
-
-	// 	// Render your scene
-	// 	// ...
 	// }
+	//-------------------------- Dynamic env maping
+	
 	glm::vec3 ufoPosition = ufo_light_model.get_position();
 	glm::vec3 lamp_light1_position = lamp_light1_model.get_position();
 	glm::vec3 lamp_light2_position = lamp_light2_model.get_position();
 	float yPos = ufo_model.get_position().y;
-	Shader direct_light((assetPath / "shaders/light_vert.glsl").string().c_str(), (assetPath / "shaders/light_frag.glsl").string().c_str());
+	Shader direct_light((get_asset_path() / "shaders/light_vert.glsl").string().c_str(), (get_asset_path() / "shaders/light_frag.glsl").string().c_str());
 	float elapsedTime = 0.0f;
 	while (!window.should_close())
 	{
@@ -310,7 +298,7 @@ void Project::run()
 		glm::mat4 model = glm::mat4(1.0f);
 		glm::mat4 view = camera.get_view_matrix();
 		glm::mat4 projection = glm::perspective(glm::radians(camera.get_zoom()), (float)Window::window_width / (float)Window::window_height, 0.1f, 100.0f);
-		glm::vec3 cameraPos = camera.get_camera_pos();
+		glm::vec3 camera_pos = camera.get_camera_pos();
 
 		// models
 		shader_model.activate();
@@ -413,8 +401,7 @@ void Project::run()
 		scene_model.draw(shader_model);
 		
 		
-		// Animation doesnt work???
-		yPos -= sin(elapsedTime * -7.0f) * -10.0f * delta_time;
+		yPos -= sin(elapsedTime * 5.0f) * -4.0f * delta_time;
 		glm::mat4 modelMatrix = glm::translate(model, glm::vec3(0.0f, yPos, 0.0f));
 		shader_model.set_mat4("model", modelMatrix);
 		ufo_model.draw(shader_model);
@@ -422,7 +409,7 @@ void Project::run()
 		glUniform3f(spotLightPosLoc, ufoPosition.x, yPos, ufoPosition.z);
 
 		shader_env_map.activate();
-		glUniform3f(glGetUniformLocation(shader_env_map.id, "cameraPos"), cameraPos.x, cameraPos.y, cameraPos.z);
+		glUniform3f(glGetUniformLocation(shader_env_map.id, "camera_pos"), camera_pos.x, camera_pos.y, camera_pos.z);
 		glUniform1i(glGetUniformLocation(shader_env_map.id, "cubemap"), 0);
 		shader_env_map.set_mat4("projection", projection);
 		shader_env_map.set_mat4("view", view);
@@ -456,7 +443,6 @@ void Project::run()
 		glBindVertexArray(0);
 		glDepthFunc(GL_LESS);
 
-
     window.new_frame();
 	}
 	glDeleteVertexArrays(1, &skybox_vao);
@@ -464,6 +450,37 @@ void Project::run()
 	glDeleteBuffers(1, &skybox_ebo);
 
 	glfwTerminate();
+}
+
+void Project::run_sound()
+{
+	ALint state = AL_PLAYING;
+
+	SoundDevice* sound_device = SoundDevice::get();
+
+	uint32_t sound1 = SoundBuffer::get()->add_sound_effect((get_asset_path() / "sound/wind.snd").string().c_str());
+	//uint32_t sound2 = SoundBuffer::get()->add_sound_effect((get_asset_path() / "engine.snd").string().c_str());
+	
+	SoundSource source1;
+	source1.play(sound1);
+	//SoundSource source2;
+	//source2.set_location(5, 10, 6);
+	//source2.play(sound2);
+	while (!window.should_close())
+	{
+		source1.loop(state);
+		//source2.loop(state);
+	}
+}
+
+std::filesystem::path Project::get_asset_path()
+{
+	std::filesystem::path executable_path = std::filesystem::current_path();
+	std::filesystem::path bin_path = executable_path.parent_path();
+	std::filesystem::path path = bin_path.parent_path();
+	std::filesystem::path project_path = path.parent_path();
+	std::filesystem::path asset_path = project_path / "project" / "assets";
+	return asset_path;
 }
 
 void Project::process_input(double dt)

@@ -3,20 +3,18 @@ project(project VERSION 0.0.1 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+
 find_package(OpenGL REQUIRED)
-
-# if(OPENGL_FOUND)
-#     message("OpenGL Correctly Found")
-#     include_directories(${OPENGL_INCLUDE_DIRS})
-#     link_libraries(${OPENGL_LIBRARIES})
-# endif()
-
+#find_package(SndFile REQUIRED)
 
 # add external libraries
 add_subdirectory(thirdparty/glm)
 add_subdirectory(thirdparty/glfw)
 add_subdirectory(thirdparty/assimp)
 add_subdirectory(thirdparty/openal-soft)
+add_subdirectory(thirdparty/libsndfile)
+
 
 set(SOURCES
     src/other/glad.c
@@ -36,11 +34,14 @@ set(SOURCES
     src/io/keyboard.cpp
     src/io/mouse.cpp
 
-    src/audio/audio_device.cpp
+    src/sound/sound_device.cpp
+    src/sound/sound_buffer.cpp
+    src/sound/sound_source.cpp
 )
 
 add_library(${PROJECT_NAME} SHARED ${SOURCES})
 target_compile_definitions(${PROJECT_NAME} PRIVATE PROJECT_EXPORT)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 target_include_directories(${PROJECT_NAME}
     PUBLIC
@@ -59,5 +60,6 @@ target_link_libraries(${PROJECT_NAME}
         glm
         assimp
         OpenAL
+        SndFile::sndfile
     PRIVATE
 )

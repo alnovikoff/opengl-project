@@ -1,6 +1,5 @@
-#include "shader.h"
+#include "render_util/shader.h"
 
-Shader::Shader() {}
 Shader::Shader(const char *vertexShaderPath, const char *fragmentShaderPath)
 {
   generate(vertexShaderPath, fragmentShaderPath);

@@ -16,8 +16,8 @@ class Shader
 {
 public:
 	unsigned int id;
-	Shader();
-	Shader(const char* vertexShaderPath, const char* fragmentShaderPath);
+	Shader() {}
+	Shader(const char* vertex_shader_path, const char* fragment_shader_path);
 
 	void generate(const char* vertex_shader, const char* vfragment_shader);
 
