@@ -10,3 +10,6 @@
 [submodule "project/thirdparty/openal-soft"]
 	path = project/thirdparty/openal-soft
 	url = https://github.com/kcat/openal-soft
+[submodule "project/thirdparty/libsndfile"]
+	path = project/thirdparty/libsndfile
+	url = https://github.com/libsndfile/libsndfile
