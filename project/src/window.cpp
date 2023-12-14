@@ -33,7 +33,7 @@ bool Window::init()
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 #ifdef __APPLE__
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // раскомментируйте эту строку, если используете macOS
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
 
 
@@ -42,7 +42,7 @@ bool Window::init()
     if (!window)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
-        //glfwTerminate();
+        glfwTerminate();
         return false;
     }
 

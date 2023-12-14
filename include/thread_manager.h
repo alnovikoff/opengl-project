@@ -1,5 +1,5 @@
-#ifndef THREAD_MANAGER
-#define THREAD_MANAGER
+#ifndef THREAD_MANAGER_H
+#define THREAD_MANAGER_H
 
 #include "project.h"
 #include "thread"
@@ -18,4 +18,4 @@ private:
   void run_sound();
 };
 
-#endif // THREAD_MANAGER
+#endif // THREAD_MANAGER_H
