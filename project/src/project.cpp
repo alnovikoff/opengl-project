@@ -43,8 +43,6 @@ void Project::run_render()
 	// Компилирование нашей шейдерной программы
 	Shader shader_model((get_asset_path()  / "shaders/model_vert.glsl").string().c_str(), (get_asset_path()  / "shaders/model_frag.glsl").string().c_str());
 	Shader shader_env_map((get_asset_path()  / "shaders/env_map_vert.glsl").string().c_str(), (get_asset_path()  / "shaders/env_map_frag.glsl").string().c_str());
-	Shader shader_window((get_asset_path()  / "shaders/window_vert.glsl").string().c_str(), (get_asset_path()  / "shaders/window_frag.glsl").string().c_str());
-
 
 	// Загрузка моделей
 	Model ground_model(_strdup((get_asset_path()  / "model/ground.obj").string().c_str()));
@@ -75,6 +73,7 @@ void Project::run_render()
 	Model scene_model(_strdup((get_asset_path()  / "model/scene.obj").string().c_str()));
 	Model ufo_model(_strdup((get_asset_path()  / "model/ufo.obj").string().c_str()));
 	Model ufo_light_model(_strdup((get_asset_path()  / "model/ufo_light.obj").string().c_str()));
+	Model bush_model(_strdup((get_asset_path()  / "model/bush.obj").string().c_str()));
 
 
 	//------------------------- SKYBOX
@@ -180,100 +179,7 @@ void Project::run_render()
 	}
 
 	Shader skybox_shader((get_asset_path() / "shaders/skybox_vert.glsl").string().c_str(), (get_asset_path() / "shaders/skybox_frag.glsl").string().c_str());
-	//------------------------- SKYBOX
-	//-------------------------- Dynamic env maping
-	// shader_window.activate();
-	// glUniform1f(glGetUniformLocation(shader_window.id, "alpha"), 0.7f); 
 
-	// skybox_shader.activate();
-	// glUniform1i(glGetUniformLocation(skybox_shader.id, "skybox"), 0);
-
-	// // // dynamic env map DOESNT WORK JUST BLACK SCREEN BUT ENC MAPPING WORKS
-	//  GLuint fbo;
-	// // glGenFramebuffers(1, &fbo);
-	//  GLuint rbo;
-	// // glGenRenderbuffers(1, &rbo);
-	// // glBindRenderbuffer(GL_RENDERBUFFER, rbo);
-	// // glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, (float)Window::window_width, (float)Window::window_height);
-	// // glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rbo);
-
-	//  GLuint cubemap;
-	// // glGenTextures(1, &cubemap);
-	// // glBindTexture(GL_TEXTURE_CUBE_MAP, cubemap);
-	// // for (GLuint i = 0; i < 6; ++i)
-	// // {
-	// // 		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, (float)Window::window_width, (float)Window::window_height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-	// // }
-	// // glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	// // glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	// // glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	// // glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	// // glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-
-	// // glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-	// // glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-
-	// glm::vec3 directions[] = {
-  //   glm::vec3(1.0f, 0.0f, 0.0f),  // Positive X
-  //   glm::vec3(-1.0f, 0.0f, 0.0f), // Negative X
-  //   glm::vec3(0.0f, 1.0f, 0.0f),  // Positive Y
-  //   glm::vec3(0.0f, -1.0f, 0.0f), // Negative Y
-  //   glm::vec3(0.0f, 0.0f, 1.0f),  // Positive Z
-  //   glm::vec3(0.0f, 0.0f, -1.0f)  // Negative Z
-	// };
-
-	// // for (GLuint face = 0; face < 6; ++face)
-	// // {
-	// // 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + face, cubemap, 0);
-	// // 	// Set the camera's direction to the direction of the current face
-	// // 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	// // 	camera.set_direction(directions[face]);
-	// // }
-
-	// // glActiveTexture(GL_TEXTURE0);
-	// // glBindTexture(GL_TEXTURE_CUBE_MAP, cubemap);
-
-	// // if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-	// // {
-	// // 		std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
-	// // }
-
-	// // Create the framebuffer
-	// float cubemapSize = 512.0f;
-	// glGenFramebuffers(1, &fbo);
-	// glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-	
-	// // Create the depth renderbuffer
-	// glGenRenderbuffers(1, &rbo);
-	// glBindRenderbuffer(GL_RENDERBUFFER, rbo);
-	// glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, cubemapSize, cubemapSize);
-	// glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rbo);
-
-	// // Create the cube map texture
-	// glGenTextures(1, &cubemap);
-	// glBindTexture(GL_TEXTURE_CUBE_MAP, cubemap);
-	// for (GLuint i = 0; i < 6; ++i)
-	// {
-	// 	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, cubemapSize, cubemapSize, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-	// }
-	// // Set the texture parameters...
-
-	// // Check the framebuffer status
-	// if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-	// {
-	// 	std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
-	// }
-
-	// // Render to each face of the cube map
-	// for (GLuint face = 0; face < 6; ++face)
-	// {
-	// 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + face, cubemap, 0);
-	// 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	// 	// Set the camera's direction
-	// 	camera.set_direction(directions[face]);
-	// }
-	//-------------------------- Dynamic env maping
 	
 	glm::vec3 ufoPosition = ufo_light_model.get_position();
 	glm::vec3 lamp_light1_position = lamp_light1_model.get_position();
@@ -281,6 +187,7 @@ void Project::run_render()
 	float yPos = ufo_model.get_position().y;
 	Shader direct_light((get_asset_path() / "shaders/light_vert.glsl").string().c_str(), (get_asset_path() / "shaders/light_frag.glsl").string().c_str());
 	float elapsedTime = 0.0f;
+	
 	while (!window.should_close())
 	{
 		double current_time = glfwGetTime();
@@ -295,11 +202,28 @@ void Project::run_render()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		window.update();
+
 		glm::mat4 model = glm::mat4(1.0f);
 		glm::mat4 view = camera.get_view_matrix();
 		glm::mat4 projection = glm::perspective(glm::radians(camera.get_zoom()), (float)Window::window_width / (float)Window::window_height, 0.1f, 100.0f);
 		glm::vec3 camera_pos = camera.get_camera_pos();
 
+		glDepthFunc(GL_LEQUAL);
+		view = glm::mat4(glm::mat3(view));
+		skybox_shader.activate();
+		glUniformMatrix4fv(glGetUniformLocation(skybox_shader.id, "view"), 1, GL_FALSE, glm::value_ptr(view));
+		glUniformMatrix4fv(glGetUniformLocation(skybox_shader.id, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+		glUniformMatrix4fv(glGetUniformLocation(skybox_shader.id, "model"), 1, GL_FALSE, glm::value_ptr(model));
+		glBindVertexArray(skybox_vao);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, cubemap_texture);
+		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+		glBindVertexArray(0);
+		glDepthFunc(GL_LESS);
+
+
+		view = camera.get_view_matrix();
+		
 		// models
 		shader_model.activate();
 
@@ -399,49 +323,36 @@ void Project::run_render()
 		cactus7_model.draw(shader_model);
 		cactus8_model.draw(shader_model);
 		scene_model.draw(shader_model);
-		
-		
-		yPos -= sin(elapsedTime * 5.0f) * -4.0f * delta_time;
-		glm::mat4 modelMatrix = glm::translate(model, glm::vec3(0.0f, yPos, 0.0f));
-		shader_model.set_mat4("model", modelMatrix);
-		ufo_model.draw(shader_model);
-		ufo_light_model.draw(shader_model);
-		glUniform3f(spotLightPosLoc, ufoPosition.x, yPos, ufoPosition.z);
 
-		shader_env_map.activate();
-		glUniform3f(glGetUniformLocation(shader_env_map.id, "camera_pos"), camera_pos.x, camera_pos.y, camera_pos.z);
-		glUniform1i(glGetUniformLocation(shader_env_map.id, "cubemap"), 0);
-		shader_env_map.set_mat4("projection", projection);
-		shader_env_map.set_mat4("view", view);
-		shader_env_map.set_mat4("model", model);
-		vehicle_discs_model.draw(shader_env_map);
-
+		// Transparent
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glBlendEquation(GL_FUNC_ADD);
 		glDepthMask(GL_FALSE);
-		shader_window.activate();
-		shader_window.set_mat4("projection", projection);
-		shader_window.set_mat4("view", view);
-		shader_window.set_mat4("model", model);
-		glUniform1f(glGetUniformLocation(shader_window.id, "alpha"), 0.7f); 
-		vehicle_windows_model.draw(shader_window);
+		glUniform1f(glGetUniformLocation(shader_model.id, "alpha"), 0.7f); 
+		vehicle_windows_model.draw(shader_model);
+		glUniform1f(glGetUniformLocation(shader_model.id, "alpha"), 1.7f); 
+		bush_model.draw(shader_model);
 		glDepthMask(GL_TRUE);
 		glDisable(GL_BLEND);
-		
-		glDepthFunc(GL_LEQUAL);
-		view = glm::mat4(glm::mat3(view));
-		skybox_shader.activate();
-		glUniformMatrix4fv(glGetUniformLocation(skybox_shader.id, "view"), 1, GL_FALSE, glm::value_ptr(view));
-		glUniformMatrix4fv(glGetUniformLocation(skybox_shader.id, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
-		glUniformMatrix4fv(glGetUniformLocation(skybox_shader.id, "model"), 1, GL_FALSE, glm::value_ptr(model));
-		glBindVertexArray(skybox_vao);
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, cubemap_texture);
-		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-		glBindVertexArray(0);
-		glDepthFunc(GL_LESS);
+
+
+		// Env mapping
+		glUniform3f(spotLightPosLoc, 0, yPos+5, 65);
+
+		shader_env_map.activate();
+		shader_env_map.set_mat4("projection", projection);
+		shader_env_map.set_mat4("view", view);
+		yPos -= sin(elapsedTime * 2.0f) * -7.0f * delta_time;
+		glm::mat4 modelMatrix = glm::translate(model, glm::vec3(0.0f, yPos, 0.0f));
+		shader_env_map.set_mat4("model", modelMatrix);
+		glUniform3f(glGetUniformLocation(shader_env_map.id, "camera_pos"), camera_pos.x, camera_pos.y, camera_pos.z);
+		glUniform1i(glGetUniformLocation(shader_env_map.id, "cubemap"), 0);
+		ufo_model.draw(shader_env_map);
+		ufo_light_model.draw(shader_env_map);
+		shader_env_map.set_mat4("model", model);
+		vehicle_discs_model.draw(shader_env_map);
 
     window.new_frame();
 	}
@@ -459,17 +370,12 @@ void Project::run_sound()
 	SoundDevice* sound_device = SoundDevice::get();
 
 	uint32_t sound1 = SoundBuffer::get()->add_sound_effect((get_asset_path() / "sound/wind.snd").string().c_str());
-	//uint32_t sound2 = SoundBuffer::get()->add_sound_effect((get_asset_path() / "engine.snd").string().c_str());
 	
 	SoundSource source1;
 	source1.play(sound1);
-	//SoundSource source2;
-	//source2.set_location(5, 10, 6);
-	//source2.play(sound2);
 	while (!window.should_close())
 	{
 		source1.loop(state);
-		//source2.loop(state);
 	}
 }
 
