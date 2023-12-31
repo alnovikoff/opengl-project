@@ -16,6 +16,8 @@
 #include "sound/sound_buffer.h"
 #include "sound/sound_source.h"
 
+#include <vector>
+
 glm::mat4 transform = glm::mat4(1.0f);
 
 float delta_time = 0.0f;
@@ -56,6 +58,7 @@ void Project::run_render()
 	Model lamps_model(_strdup((get_asset_path()  / "model/lamps.obj").string().c_str()));
 	Model lamp_light1_model(_strdup((get_asset_path()  / "model/lamp_light_one.obj").string().c_str()));
 	Model lamp_light2_model(_strdup((get_asset_path()  / "model/lamp_light_two.obj").string().c_str()));
+	Model lamp_light3_model(_strdup((get_asset_path()  / "model/lamp_light_three.obj").string().c_str()));
 	Model rock1_model(_strdup((get_asset_path()  / "model/rock_1.obj").string().c_str()));
 	Model rock2_model(_strdup((get_asset_path()  / "model/rock_2.obj").string().c_str()));
 	Model rock3_model(_strdup((get_asset_path()  / "model/rock_3.obj").string().c_str()));
@@ -75,7 +78,8 @@ void Project::run_render()
 	Model ufo_light_model(_strdup((get_asset_path()  / "model/ufo_light.obj").string().c_str()));
 	Model bush_model(_strdup((get_asset_path()  / "model/bush.obj").string().c_str()));
 
-
+	objects.push_back(bush_model);
+	objects.push_back(vehicle_windows_model);
 	//------------------------- SKYBOX
 	float skybox_vertices[] =
 	{
@@ -187,6 +191,10 @@ void Project::run_render()
 	float yPos = ufo_model.get_position().y;
 	Shader direct_light((get_asset_path() / "shaders/light_vert.glsl").string().c_str(), (get_asset_path() / "shaders/light_frag.glsl").string().c_str());
 	float elapsedTime = 0.0f;
+
+	float constant = 1.0f; // Adjust this value as needed
+	float linear = 0.005f; // Adjust this value as needed
+	float quadratic = 0.005f; // Adjust this value as needed
 	
 	while (!window.should_close())
 	{
@@ -246,8 +254,8 @@ void Project::run_render()
 		GLint spotLightSpecularLoc = glGetUniformLocation(shader_model.id, "spotlight[0].specular");
 
     glUniform3f(spotLightDirLoc, 0.0f, 1.0f, 0.0f);
-    float cutoffAngle = 62.0f; // in degrees
-		float outerCutoffAngle = 66.0f; // in degrees
+    float cutoffAngle = 70.0f; // in degrees
+		float outerCutoffAngle = 76.0f; // in degrees
 		glUniform1f(spotLightCutoffLoc, cos(glm::radians(cutoffAngle)));
 		glUniform1f(spotLightOuterCutoffLoc, cos(glm::radians(outerCutoffAngle)));
     glUniform3f(spotLightAmbientLoc, 0.1f, 0.3f, 0.1f);
@@ -265,12 +273,12 @@ void Project::run_render()
 
 		glUniform3f(spotLightPosLoc2, lamp_light1_position.x, lamp_light1_position.y, lamp_light1_position.z);
     glUniform3f(spotLightDirLoc2, 0.0f, 1.0f, 0.0f);
-    float cutoffAngle2 = 45.0f; // in degrees
-		float outerCutoffAngle2 = 50.0f; // in degrees
+    float cutoffAngle2 = 85.0f; // in degrees
+		float outerCutoffAngle2 = 90.0f; // in degrees
 		glUniform1f(spotLightCutoffLoc2, cos(glm::radians(cutoffAngle2)));
 		glUniform1f(spotLightOuterCutoffLoc2, cos(glm::radians(outerCutoffAngle2)));
-		glUniform3f(spotLightAmbientLoc2, 0.3f, 0.3f, 0.0f); // Yellow ambient
-		glUniform3f(spotLightDiffuseLoc2, 0.3f, 0.3f, 0.0f); // Yellow diffuse
+		glUniform3f(spotLightAmbientLoc2, 0.5f, 0.5f, 0.0f); // Yellow ambient
+		glUniform3f(spotLightDiffuseLoc2, 0.5f, 0.5f, 0.0f); // Yellow diffuse
 		glUniform3f(spotLightSpecularLoc2, 0.08f, 0.08f, 0.0f); // Yellow specu
 		// -----------------------------------
 		// Spot Light 3 -----------------------------------
@@ -284,14 +292,40 @@ void Project::run_render()
 
 		glUniform3f(spotLightPosLoc3, lamp_light2_position.x, lamp_light2_position.y, lamp_light2_position.z);
     glUniform3f(spotLightDirLoc3, 0.0f, 1.0f, 0.0f);
-    float cutoffAngle3 = 45.0f; // in degrees
-		float outerCutoffAngle3 = 50.0f; // in degrees
+    float cutoffAngle3 = 85.0f; // in degrees
+		float outerCutoffAngle3 = 90.0f; // in degrees
 		glUniform1f(spotLightCutoffLoc3, cos(glm::radians(cutoffAngle3)));
 		glUniform1f(spotLightOuterCutoffLoc3, cos(glm::radians(outerCutoffAngle3)));
 		glUniform3f(spotLightAmbientLoc3, 0.3f, 0.3f, 0.0f); // Yellow ambient
-		glUniform3f(spotLightDiffuseLoc3, 0.3f, 0.3f, 0.0f); // Yellow diffuse
-		glUniform3f(spotLightSpecularLoc3, 0.09f, 0.09f, 0.0f); // Yellow specu
+		glUniform3f(spotLightDiffuseLoc3, 0.8f, 0.4f, 0.0f); // Yellow diffuse
+		glUniform3f(spotLightSpecularLoc3, 0.1f, 0.1f, 0.0f); // Yellow specu
 		// ----------------------------------
+		GLint spotLightPosLoc4 = glGetUniformLocation(shader_model.id, "spotlight[3].position");
+		GLint spotLightRotLoc4 = glGetUniformLocation(shader_model.id, "spotlight[3].rotation");
+		GLint spotLightDirLoc4 = glGetUniformLocation(shader_model.id, "spotlight[3].direction");
+		GLint spotLightCutoffLoc4 = glGetUniformLocation(shader_model.id, "spotlight[3].cutoff");
+		GLint spotLightOuterCutoffLoc4 = glGetUniformLocation(shader_model.id, "spotlight[3].outerCutoff");
+		GLint spotLightAmbientLoc4 = glGetUniformLocation(shader_model.id, "spotlight[3].ambient");
+		GLint spotLightDiffuseLoc4 = glGetUniformLocation(shader_model.id, "spotlight[3].diffuse");
+		GLint spotLightSpecularLoc4 = glGetUniformLocation(shader_model.id, "spotlight[3].specular");
+		glRotatef(45.0f, 0.0f, 1.0f, 0.0f);
+		glUniform3f(spotLightPosLoc4, lamp_light3_model.get_position().x, lamp_light3_model.get_position().y, lamp_light3_model.get_position().z);
+		
+    glUniform3f(spotLightDirLoc4, 0.0f, 1.0f, 0.0f);
+    float cutoffAngle4 = 85.0f; // in degrees
+		float outerCutoffAngle4 = 90.0f; // in degrees
+		glUniform1f(spotLightCutoffLoc4, cos(glm::radians(cutoffAngle4)));
+		glUniform1f(spotLightOuterCutoffLoc4, cos(glm::radians(outerCutoffAngle4)));
+		glUniform3f(spotLightAmbientLoc4, 0.8f, 0.8f, 0.0f); // Yellow ambient
+		glUniform3f(spotLightDiffuseLoc4, 0.8f, 0.8f, 0.0f); // Yellow diffuse
+		glUniform3f(spotLightSpecularLoc4, 0.08f, 0.08f, 0.0f); // Yellow specu
+
+		for(int i = 0; i < 4; i++)
+    {
+        glUniform1f(glGetUniformLocation(shader_model.id, ("spotlight[" + std::to_string(i) + "].constant").c_str()), constant);
+        glUniform1f(glGetUniformLocation(shader_model.id, ("spotlight[" + std::to_string(i) + "].linear").c_str()), linear);
+        glUniform1f(glGetUniformLocation(shader_model.id, ("spotlight[" + std::to_string(i) + "].quadratic").c_str()), quadratic);
+    }
 		
 		shader_model.set_int("material.diffuse", 0);
 		shader_model.set_float("material.shininess", 1.0f);
@@ -323,6 +357,7 @@ void Project::run_render()
 		cactus7_model.draw(shader_model);
 		cactus8_model.draw(shader_model);
 		scene_model.draw(shader_model);
+		lamp_light3_model.draw(shader_model);
 
 		// Transparent
 		glEnable(GL_DEPTH_TEST);
@@ -330,9 +365,18 @@ void Project::run_render()
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glBlendEquation(GL_FUNC_ADD);
 		glDepthMask(GL_FALSE);
+
+		// for (const Model& object : objects) {
+		// 	shader_model.activate();
+		// 	shader_model.set_mat4("projection", projection);
+		// 	shader_model.set_mat4("view", view);
+		// 	shader_model.set_mat4("model", model);
+		// 	glUniform1f(glGetUniformLocation(shader_model.id, "alpha"), 1.0); 
+		// 	object.model.draw(shader_model);
+		// }
 		glUniform1f(glGetUniformLocation(shader_model.id, "alpha"), 0.7f); 
 		vehicle_windows_model.draw(shader_model);
-		glUniform1f(glGetUniformLocation(shader_model.id, "alpha"), 1.7f); 
+		glUniform1f(glGetUniformLocation(shader_model.id, "alpha"), 1.0f); 
 		bush_model.draw(shader_model);
 		glDepthMask(GL_TRUE);
 		glDisable(GL_BLEND);
@@ -347,7 +391,7 @@ void Project::run_render()
 		yPos -= sin(elapsedTime * 2.0f) * -7.0f * delta_time;
 		glm::mat4 modelMatrix = glm::translate(model, glm::vec3(0.0f, yPos, 0.0f));
 		shader_env_map.set_mat4("model", modelMatrix);
-		glUniform3f(glGetUniformLocation(shader_env_map.id, "camera_pos"), camera_pos.x, camera_pos.y, camera_pos.z);
+		glUniform3f(glGetUniformLocation(shader_env_map.id, "cameraPos"), camera_pos.x, camera_pos.y, camera_pos.z);
 		glUniform1i(glGetUniformLocation(shader_env_map.id, "cubemap"), 0);
 		ufo_model.draw(shader_env_map);
 		ufo_light_model.draw(shader_env_map);
@@ -362,6 +406,13 @@ void Project::run_render()
 
 	glfwTerminate();
 }
+
+// bool Project::sort_objects() {
+// 	std::sort(Project::objects.begin(), Project::objects.end(), [](const std::vector<Model> &a, const std::vector<Model> &b)
+// 	{
+// 			return camera.distance_to_camera(a.value.get_position(), camera.get_camera_pos()) > camera.distance_to_camera(Project::objects[1].get_position(), camera.get_camera_pos());
+// 	});
+// }
 
 void Project::run_sound()
 {

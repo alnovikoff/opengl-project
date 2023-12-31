@@ -24,6 +24,7 @@ public:
 	void update_camera_direction(double dx, double dy);
 	void update_camera_position(CameraDirection dir, double dt);
 	void update_camera_zoom(double dy);
+	float distance_to_camera(const glm::vec3& position, const glm::vec3& camera_position);
 
 	glm::mat4 get_view_matrix();
 

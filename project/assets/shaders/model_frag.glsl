@@ -23,6 +23,9 @@ struct Spotlight
     vec3 ambient;
     vec3 diffuse;
     vec3 specular;
+    float constant; // Add this line
+    float linear; // Add this line
+    float quadratic; // Add this line
 };
 
 in vec3 FragPos;
@@ -31,7 +34,7 @@ in vec2 TexCoords;
 
 uniform vec3 viewPos;
 uniform Light light;
-uniform Spotlight spotlight[3];
+uniform Spotlight spotlight[4];
 uniform Material material;
 uniform float alpha; // Add this line
 
@@ -53,7 +56,7 @@ void main()
     // Initialize the final color outside the loop
     vec3 result = ambient + diffuseDirectional;
 
-    for(int i = 0; i < 3; i++)
+    for(int i = 0; i < 4; i++)
     {
         // Diffuse from spotlight
         vec3 spotLightDir = normalize(spotlight[i].position - FragPos);
@@ -68,8 +71,12 @@ void main()
         float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
         vec3 specular = spotlight[i].specular * (spec * vec3(1.0));
 
+        // Light attenuation
+        float distance = length(spotlight[i].position - FragPos);
+        float attenuation = 1.0 / (spotlight[i].constant + spotlight[i].linear * distance + spotlight[i].quadratic * (distance * distance));
+
         // Accumulate the contributions from spotlight in the result
-        result += diffuseSpotlight + specular;
+        result += (diffuseSpotlight + specular) * attenuation;
     }
 
     // Assign the final color to gl_FragColor

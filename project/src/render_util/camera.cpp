@@ -109,3 +109,7 @@ void Camera::update_camera_vectors()
 	_camera_right = glm::normalize(glm::cross(_camera_front, _world_up));
 	_camera_up = glm::normalize(glm::cross(_camera_right, _camera_front));
 }
+
+float Camera::distance_to_camera(const glm::vec3& position, const glm::vec3& camera_position){
+	return glm::length(camera_position - position);
+}
