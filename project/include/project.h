@@ -13,13 +13,14 @@ class PROJECT_API Project
 {
 public:
     Project() {}
+
+    void initialize();
     void run_render();
     void run_sound();
     void process_input(double dt);
 
     std::filesystem::path get_asset_path();
-    std::vector<Model> objects;
-    bool sort_objects();
+
 private:
     Window window;
 };

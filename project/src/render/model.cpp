@@ -141,6 +141,8 @@ Mesh Model::process_mesh(aiMesh *mesh, const aiScene *scene)
   return Mesh(vertices, indices, textures);
 }
 
+// Load material textures
+
 std::vector<TextureStructure> Model::load_material_textures(aiMaterial *mat, aiTextureType type, std::string type_name)
 {
   std::vector<TextureStructure> textures;
@@ -172,6 +174,8 @@ std::vector<TextureStructure> Model::load_material_textures(aiMaterial *mat, aiT
   }
   return textures;
 }
+
+// TODO: MOVE THIS TO TEXTURE CLASS
 
 unsigned int texture_from_file(const char *path, const std::string &directory)
 {

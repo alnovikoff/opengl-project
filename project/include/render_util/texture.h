@@ -9,8 +9,9 @@ class Texture
 public:
 	Texture() {};
 
-	unsigned int  load_texture(const char* path, bool flip = true);
+	//unsigned int  load_texture(const char* path, bool flip = true);
 	void apply_texture();
+	unsigned int load_cubemap_texture(const char* path, bool flip = true);
 
 private:
 	int _width; 

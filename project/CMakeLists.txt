@@ -27,9 +27,11 @@ set(SOURCES
     src/render_util/texture.cpp
     src/render_util/camera.cpp
 
+    src/primitive/cube.cpp
+
     src/render/mesh.cpp
     src/render/model.cpp
-    src/render/shadowmap.cpp
+    src/render/skybox.cpp
 
     src/io/keyboard.cpp
     src/io/mouse.cpp

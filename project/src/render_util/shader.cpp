@@ -63,6 +63,7 @@ GLuint Shader::compile_shader(const char *filepath, GLenum type)
   int success;
   char infoLog[512];
 
+  // Creating shader conatainer
   GLuint ret = glCreateShader(type);
   std::string shader_src = load_shader(filepath);
   const GLchar *shader = shader_src.c_str();
