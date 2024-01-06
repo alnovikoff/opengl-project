@@ -54,7 +54,7 @@ void Project::run_render()
 	Shader shader_model((get_asset_path()  / "shaders/model_vert.glsl").string().c_str(), (get_asset_path()  / "shaders/model_frag.glsl").string().c_str());
 	Shader shader_env_map((get_asset_path()  / "shaders/env_map_vert.glsl").string().c_str(), (get_asset_path()  / "shaders/env_map_frag.glsl").string().c_str());
 	Shader skybox_shader((get_asset_path() / "shaders/skybox_vert.glsl").string().c_str(), (get_asset_path() / "shaders/skybox_frag.glsl").string().c_str());
-	
+	Shader light_shader((get_asset_path() / "shaders/light_vert.glsl").string().c_str(), (get_asset_path() / "shaders/light_frag.glsl").string().c_str());
 	// Load models
 	Model ground_model(_strdup((get_asset_path()  / "model/ground.obj").string().c_str()));
 	Model pillars_model(_strdup((get_asset_path()  / "model/pillars.obj").string().c_str()));
@@ -68,12 +68,12 @@ void Project::run_render()
 	Model lamp_light1_model(_strdup((get_asset_path()  / "model/lamp_light_one.obj").string().c_str()));
 	Model lamp_light2_model(_strdup((get_asset_path()  / "model/lamp_light_two.obj").string().c_str()));
 	Model lamp_light3_model(_strdup((get_asset_path()  / "model/lamp_light_three.obj").string().c_str()));
-	Model rock1_model(_strdup((get_asset_path()  / "model/rock_1.obj").string().c_str()));
-	Model rock2_model(_strdup((get_asset_path()  / "model/rock_2.obj").string().c_str()));
-	Model rock3_model(_strdup((get_asset_path()  / "model/rock_3.obj").string().c_str()));
-	Model rock4_model(_strdup((get_asset_path()  / "model/rock_4.obj").string().c_str()));
-	Model rock5_model(_strdup((get_asset_path()  / "model/rock_5.obj").string().c_str()));
-	Model rock6_model(_strdup((get_asset_path() / "model/rock_6.obj").string().c_str()));
+	Model rock1_model(_strdup((get_asset_path()  / "model/rock1.obj").string().c_str()));
+	Model rock2_model(_strdup((get_asset_path()  / "model/rock2.obj").string().c_str()));
+	Model rock3_model(_strdup((get_asset_path()  / "model/rock3.obj").string().c_str()));
+	Model rock4_model(_strdup((get_asset_path()  / "model/rock4.obj").string().c_str()));
+	Model rock5_model(_strdup((get_asset_path()  / "model/rock5.obj").string().c_str()));
+	Model rock6_model(_strdup((get_asset_path() / "model/rock6.obj").string().c_str()));
 	Model cactus1_model(_strdup((get_asset_path()  / "model/cactus_1.obj").string().c_str()));
 	Model cactus2_model(_strdup((get_asset_path()  / "model/cactus_2.obj").string().c_str()));
 	Model cactus3_model(_strdup((get_asset_path()  / "model/cactus_3.obj").string().c_str()));
@@ -245,8 +245,6 @@ void Project::run_render()
 		vehicle_light2_model.draw(shader_model);
 		wires_model.draw(shader_model);
 		lamps_model.draw(shader_model);
-		lamp_light1_model.draw(shader_model);
-		lamp_light2_model.draw(shader_model);
 		rock1_model.draw(shader_model);
 		rock2_model.draw(shader_model);
 		rock3_model.draw(shader_model);
@@ -262,7 +260,6 @@ void Project::run_render()
 		cactus7_model.draw(shader_model);
 		cactus8_model.draw(shader_model);
 		scene_model.draw(shader_model);
-		lamp_light3_model.draw(shader_model);
 		glDisable(GL_CULL_FACE);
 		vehicle_model.draw(shader_model);
 		glEnable(GL_CULL_FACE);
@@ -278,10 +275,21 @@ void Project::run_render()
 		glUniform3f(glGetUniformLocation(shader_env_map.id, "cameraPos"), camera_pos.x, camera_pos.y, camera_pos.z);
 		glUniform1i(glGetUniformLocation(shader_env_map.id, "cubemap"), 0);
 		ufo_model.draw(shader_env_map);
-		ufo_light_model.draw(shader_env_map);
 		shader_env_map.set_mat4("model", model);
 		//vehicle_discs_model.draw(shader_env_map);
 		glDisable(GL_CULL_FACE);
+		
+		light_shader.activate();
+		light_shader.set_mat4("projection", projection);
+		light_shader.set_mat4("view", view);
+		light_shader.set_mat4("model", model);
+		glUniform3f(glGetUniformLocation(light_shader.id, "objectColor"),  0.7f, 0.6f, 0.0f);
+		lamp_light1_model.draw(light_shader);
+		lamp_light2_model.draw(light_shader);
+		lamp_light3_model.draw(light_shader);
+		glUniform3f(glGetUniformLocation(light_shader.id, "objectColor"),  0.1f, 0.5f, 0.1f);
+		light_shader.set_mat4("model", modelMatrix);
+		ufo_light_model.draw(light_shader);
 
 		// Draw transparent models
 		shader_model.activate();

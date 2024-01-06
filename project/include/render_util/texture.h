@@ -12,7 +12,7 @@ public:
 	//unsigned int  load_texture(const char* path, bool flip = true);
 	void apply_texture();
 	unsigned int load_cubemap_texture(const char* path, bool flip = true);
-
+	unsigned int id;
 private:
 	int _width; 
 	int _height; 
