@@ -27,8 +27,6 @@ set(SOURCES
     src/render_util/texture.cpp
     src/render_util/camera.cpp
 
-    src/primitive/cube.cpp
-
     src/render/mesh.cpp
     src/render/model.cpp
     src/render/skybox.cpp

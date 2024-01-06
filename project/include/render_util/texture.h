@@ -3,15 +3,18 @@
 
 // #define STB_IMAGE_IMPLEMENTATION
 #include "../other/stb/stb_image.h"
+#include "string"
+#include "../other/glad/glad.h"
+#include <filesystem>
+#include "iostream"
 
 class Texture
 {
 public:
 	Texture() {};
 
-	//unsigned int  load_texture(const char* path, bool flip = true);
-	void apply_texture();
-	unsigned int load_cubemap_texture(const char* path, bool flip = true);
+	void texture_from_file(const char *path, const std::string &directory);
+	void load_cubemap_texture(std::filesystem::path path);
 	unsigned int id;
 private:
 	int _width; 

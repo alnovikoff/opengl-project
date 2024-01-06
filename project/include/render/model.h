@@ -26,7 +26,6 @@ unsigned int texture_from_file(const char *path, const std::string &directory);
 class Model 
 {
 public:
-	std::vector<TextureStructure> textures_loaded; // (оптимизация) сохраняем все загруженные текстуры, чтобы убедиться, что они не загружены более одного раза
 	std::vector<Mesh> meshes;
 	std::string directory;
 	bool gammaCorrection;
@@ -45,7 +44,7 @@ private:
 	void load_model(std::string path);
 	void process_node(aiNode *node, const aiScene *scene);
 	Mesh process_mesh(aiMesh *mesh, const aiScene *scene);
-	std::vector<TextureStructure> load_material_textures(aiMaterial *mat, aiTextureType type, std::string type_name);
+	Texture load_material_textures(aiMaterial *mat, aiTextureType type, std::string type_name);
 	glm::mat4 model_matrix;
 };
 

@@ -1,12 +1,12 @@
 #ifndef SKYBOX_H
 #define SKYBOX_H
 
-#include "../primitive/cube.h"
-
 #include <other/stb/stb_image.h>
 
 #include <iostream>
 #include <filesystem>
+#include "../render_util/shader.h"
+#include "../render_util/texture.h"
 
 class Skybox
 {
@@ -26,40 +26,8 @@ public:
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindVertexArray(0);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-		// Load the cubemap texture
-		std::string cubemap_face[6] = 
-		{
-				_strdup((path / "skybox/right.jpg").string().c_str()),
-				_strdup((path / "skybox/left.jpg").string().c_str()),
-				_strdup((path / "skybox/bottom.jpg").string().c_str()),
-				_strdup((path / "skybox/top.jpg").string().c_str()),
-				_strdup((path / "skybox/front.jpg").string().c_str()),
-				_strdup((path / "skybox/back.jpg").string().c_str()),
-		};
 
-		glGenTextures(1, &cubemap_texture);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, cubemap_texture);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-
-		for (unsigned int i = 0; i < 6; i++)
-		{
-				int width, height, nrChannels;
-				unsigned char *data = stbi_load(cubemap_face[i].c_str(), &width, &height, &nrChannels, 0);
-				if (data)
-				{
-						glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-						stbi_image_free(data);
-				}
-				else
-				{
-						std::cout << "Failed to load cubemap texture at path: " << cubemap_face[i] << std::endl;
-						stbi_image_free(data);
-				}
-		}
+		texture.load_cubemap_texture(path);
 	}
 
 	~Skybox()
@@ -74,15 +42,16 @@ public:
 		glDepthFunc(GL_LEQUAL);
 		glBindVertexArray(skybox_vao);
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, cubemap_texture);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, texture.id);
 		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 		glBindVertexArray(0);
 		glDepthFunc(GL_LESS);
 	}
 private:
+	Texture texture;
+	
 	unsigned int skybox_vao, skybox_vbo, skybox_ebo;
-	unsigned int cubemap_texture;
-
+	
 	float skybox_vertices[24] =
 	{
 		-0.5f, -0.5f,  0.5f,

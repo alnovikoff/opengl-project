@@ -345,11 +345,7 @@ void Project::run_sound()
 
 std::filesystem::path Project::get_asset_path()
 {
-	std::filesystem::path executable_path = std::filesystem::current_path();
-	std::filesystem::path bin_path = executable_path.parent_path();
-	std::filesystem::path path = bin_path.parent_path();
-	std::filesystem::path project_path = path.parent_path();
-	std::filesystem::path asset_path = project_path / "project" / "assets";
+	std::filesystem::path asset_path = "assets";
 	return asset_path;
 }
 

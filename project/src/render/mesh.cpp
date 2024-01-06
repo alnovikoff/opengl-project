@@ -3,11 +3,11 @@
 #include <cstddef>
 #include <iostream>
 
-Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<TextureStructure> textures)
+Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, Texture texture)
 {
 	this->vertices = vertices;
 	this->indices = indices;
-	this->textures = textures;
+	this->texture = texture;
 
 	setup_mesh();
 }
@@ -58,32 +58,10 @@ void Mesh::setup_mesh()
 
 void Mesh::draw(Shader shader) 
 {
-	unsigned int diffuseNr = 1;
-	unsigned int specularNr = 1;
-	unsigned int normalNr = 1;
-	unsigned int heightNr = 1;
-	
-	for (unsigned int i = 0; i < textures.size(); i++)
-	{
-		glActiveTexture(GL_TEXTURE0 + i); // перед связыванием активируем нужный текстурный юнит
+	glActiveTexture(GL_TEXTURE0); // перед связыванием активируем нужный текстурный юнит
+	glUniform1i(glGetUniformLocation(shader.id, "texture_diffuse1"), 1);
 
-		// Получаем номер текстуры (номер N в diffuse_textureN)
-		std::string number;
-		std::string name = textures[i].type;
-		if (name == "texture_diffuse")
-				number = std::to_string(diffuseNr++);
-		else if (name == "texture_specular")
-				number = std::to_string(specularNr++); // конвертируем unsigned int в строку
-		else if (name == "texture_normal")
-				number = std::to_string(normalNr++); // конвертируем unsigned int в строку
-		else if (name == "texture_height")
-				number = std::to_string(heightNr++); // конвертируем unsigned int в строку
-
-		// Теперь устанавливаем сэмплер на нужный текстурный юнит
-		glUniform1i(glGetUniformLocation(shader.id, (name + number).c_str()), i);
-		// и связываем текстуру
-		glBindTexture(GL_TEXTURE_2D, textures[i].id);
-	}
+	glBindTexture(GL_TEXTURE_2D, texture.id);
 
 	// Отрисовываем меш
 	glBindVertexArray(VAO);
