@@ -510,7 +510,7 @@ void RenderFrame(void)
 	devcon->VSSetConstantBuffers(0, 1, &pConstantBuffer);
 	devcon->PSSetShader(pPS, 0, 0);
 	devcon->PSSetSamplers(0, 1, &TexSamplerState);
-	ourModel->Draw(devcon);
+	ourModel->draw(devcon);
 
 	swapchain->Present(0, 0);
 }

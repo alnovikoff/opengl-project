@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#include "E:\MUNI\ComputerGraphicsAPI\project\project\include\other\stb\stb_image.h"
+#include <other/stb/stb_image.h>
 
 
 Model::Model(char *path)
@@ -16,6 +16,10 @@ void Model::draw(Shader &shader)
   {
     meshes[i].draw(shader);
   }
+}
+
+void Model::set_model_matrix(const glm::mat4& matrix) {
+  model_matrix = matrix;
 }
 
 void Model::set_position(const glm::vec3& position)
@@ -36,33 +40,32 @@ glm::vec3 Model::get_position()
 
 void Model::load_model(std::string path)
 {
-  // Чтение файла с помощью Assimp
+  // Read with assimp
   Assimp::Importer importer;
   const aiScene *scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_CalcTangentSpace);
 
-  // Проверка на ошибки
   if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) // если НЕ 0
   {
     std::cout << "ERROR::ASSIMP:: " << importer.GetErrorString() << std::endl;
     return;
   }
 
-  // Получение пути к файлу
+  // Get file dir
   directory = path.substr(0, path.find_last_of('/'));
 
-  // Рекурсивная обработка корневого узла Assimp
+  // Recursive processing of the root node Assimp
   process_node(scene->mRootNode, scene);
 }
 
 void Model::process_node(aiNode *node, const aiScene *scene)
 {
-  // Обрабатываем все меши (если они есть) у выбранного узла
+  // Process all meshes (if any) of the selected node
   for (unsigned int i = 0; i < node->mNumMeshes; i++)
   {
     aiMesh *mesh = scene->mMeshes[node->mMeshes[i]];
     meshes.push_back(process_mesh(mesh, scene));
   }
-  // И проделываем то же самое для всех дочерних узлов
+  // And do the same for all child nodes
   for (unsigned int i = 0; i < node->mNumChildren; i++)
   {
     process_node(node->mChildren[i], scene);
@@ -71,12 +74,11 @@ void Model::process_node(aiNode *node, const aiScene *scene)
 
 Mesh Model::process_mesh(aiMesh *mesh, const aiScene *scene)
 {
-  // Данные для заполнения
+  // Data to be filled in
   std::vector<Vertex> vertices;
   std::vector<unsigned int> indices;
-  //std::vector<TextureStructure> textures;
 
-  // Цикл по всем вершинам меша
+  // Cycle through all nodes of the mesh
   for (unsigned int i = 0; i < mesh->mNumVertices; i++)
   {
     Vertex vertex;
@@ -101,15 +103,16 @@ Mesh Model::process_mesh(aiMesh *mesh, const aiScene *scene)
       vertex.tex_coord = vec;
     }
     else
+    {
       vertex.tex_coord = glm::vec2(0.0f, 0.0f);
+    }
 
-    // Касательный вектор
+    // Tangent vector
     vector.x = mesh->mTangents[i].x;
     vector.y = mesh->mTangents[i].y;
     vector.z = mesh->mTangents[i].z;
     vertex.tangent = vector;
-
-    // Вектор бинормали
+    // Binormal vector
     vector.x = mesh->mBitangents[i].x;
     vector.y = mesh->mBitangents[i].y;
     vector.z = mesh->mBitangents[i].z;
@@ -122,13 +125,14 @@ Mesh Model::process_mesh(aiMesh *mesh, const aiScene *scene)
     aiFace face = mesh->mFaces[i];
 
     for (unsigned int j = 0; j < face.mNumIndices; j++)
+    {
       indices.push_back(face.mIndices[j]);
+    }
   }
 
   aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
 
   Texture diffuse_maps = load_material_textures(material, aiTextureType_DIFFUSE, "texture_diffuse");
-  std::cout << diffuse_maps.id << '\n';
 
   return Mesh(vertices, indices, diffuse_maps);
 }

@@ -17,12 +17,13 @@ public:
 	void set_velocity(const float &x, const float &y, const float &z);
 	void set_gain(const float& val);
 	void set_pitch(const float& val);
+
+	void update_pitch(float value);
+
 private:
 	ALuint _source;
-	float _pitch = 1.f;
-	float _gain = 1.f;
-	float _position[3] = { 0,0,0 };
-	float _velocity[3] = { 0,0,0 };
+	float _gain = 1.0f;
+		float _pitch = 1.0f;
 	bool _is_loop_sound = true;
 	ALuint _buffer = 0;
 };

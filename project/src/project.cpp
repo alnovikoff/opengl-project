@@ -123,7 +123,7 @@ void Project::run_render()
 		glm::mat4 model = glm::mat4(1.0f);
 		glm::mat4 view = camera.get_view_matrix();
 		glm::mat4 projection = glm::perspective(glm::radians(camera.get_zoom()), (float)Window::window_width / (float)Window::window_height, 0.1f, 100.0f);
-		glm::vec3 camera_pos = camera.get_camera_pos();
+		glm::vec3 _camera_pos = camera.get_camera_pos();
 
 		/* SKYBOX RENDER */
 		skybox_shader.activate();
@@ -272,7 +272,7 @@ void Project::run_render()
 		yPos -= sin(elapsedTime * 2.0f) * -7.0f * delta_time;
 		glm::mat4 modelMatrix = glm::translate(model, glm::vec3(0.0f, yPos, 0.0f));
 		shader_env_map.set_mat4("model", modelMatrix);
-		glUniform3f(glGetUniformLocation(shader_env_map.id, "cameraPos"), camera_pos.x, camera_pos.y, camera_pos.z);
+		glUniform3f(glGetUniformLocation(shader_env_map.id, "cameraPos"), _camera_pos.x, _camera_pos.y, _camera_pos.z);
 		glUniform1i(glGetUniformLocation(shader_env_map.id, "cubemap"), 0);
 		ufo_model.draw(shader_env_map);
 		shader_env_map.set_mat4("model", model);
@@ -337,8 +337,10 @@ void Project::run_sound()
 	
 	SoundSource source1;
 	source1.play(sound1);
+
 	while (!window.should_close())
 	{
+
 		source1.loop(state);
 	}
 }

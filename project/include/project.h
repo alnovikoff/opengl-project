@@ -18,7 +18,6 @@ public:
     void run_render();
     void run_sound();
     void process_input(double dt);
-
     std::filesystem::path get_asset_path();
 
 private:

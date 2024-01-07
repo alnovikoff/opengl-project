@@ -26,24 +26,23 @@ unsigned int texture_from_file(const char *path, const std::string &directory);
 class Model 
 {
 public:
-	std::vector<Mesh> meshes;
-	std::string directory;
-	bool gammaCorrection;
-
 	Model(char *path);
 
-	void setModelMatrix(const glm::mat4& matrix) {
-		model_matrix = matrix;
-	}
-	
+	void set_model_matrix(const glm::mat4& matrix);
 	void set_position(const glm::vec3& position);
-	glm::vec3 get_position();
+
 	void draw(Shader &shader);	
 	void update_model_matrix();
+
+	glm::vec3 get_position();
+
+	std::vector<Mesh> meshes;
+	std::string 			directory;
+	bool 							gammaCorrection;
 private:
-	void load_model(std::string path);
-	void process_node(aiNode *node, const aiScene *scene);
-	Mesh process_mesh(aiMesh *mesh, const aiScene *scene);
+	void 		load_model(std::string path);
+	void 		process_node(aiNode *node, const aiScene *scene);
+	Mesh 		process_mesh(aiMesh *mesh, const aiScene *scene);
 	Texture load_material_textures(aiMaterial *mat, aiTextureType type, std::string type_name);
 	glm::mat4 model_matrix;
 };

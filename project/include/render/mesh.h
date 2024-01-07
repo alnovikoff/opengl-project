@@ -18,19 +18,18 @@ struct Vertex {
 
 class Mesh {
 public:
-	std::vector<Vertex> vertices;
-	std::vector<unsigned int> indices;
-	Texture texture;
-	unsigned int VAO;
-
 	Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, Texture texture);
-	void draw(Shader shader);
-	std::vector<Vertex> get_vertices() const {
-		return vertices;
-	}
-private:
-	unsigned int VBO, EBO;
 
+	std::vector<Vertex> 				vertices;
+	std::vector<unsigned int> 	indices;
+	Texture 										texture;
+	unsigned int 								VAO;
+
+	void draw(Shader shader);
+	std::vector<Vertex> get_vertices();
+private:
+	unsigned int 								VBO;
+	unsigned int 								EBO;
 	void setup_mesh();	
 };
 
