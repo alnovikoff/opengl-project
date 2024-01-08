@@ -4,36 +4,36 @@
 
 SoundSource::SoundSource()
 {
-	alGenSources(1, &_source);
-	alSourcef(_source, AL_PITCH, _pitch);
-	alSourcef(_source, AL_GAIN, _gain);
-	alSourcei(_source, AL_LOOPING, _is_loop_sound);
-	alSourcei(_source, AL_BUFFER, _buffer);
+	alGenSources(1, &source);
+	alSourcef(source, AL_PITCH, pitch);
+	alSourcef(source, AL_GAIN, gain);
+	alSourcei(source, AL_LOOPING, is_loop_sound);
+	alSourcei(source, AL_BUFFER, buffer);
 }
 
 SoundSource::~SoundSource()
 {
-	alDeleteSources(1, &_source);
+	alDeleteSources(1, &source);
 }
 
 void SoundSource::update_pitch(float value)
 {
-	_pitch = value;
-	alSourcef(_source, AL_PITCH, _pitch);
+	pitch = value;
+	alSourcef(source, AL_PITCH, pitch);
 }
 
 void SoundSource::play(const ALuint buffer_to_play)
 {
-	if (buffer_to_play != _buffer)
+	if (buffer_to_play != buffer)
 	{
-		_buffer = buffer_to_play;
-		alSourcei(_source, AL_BUFFER, (ALint)_buffer);
+		buffer = buffer_to_play;
+		alSourcei(source, AL_BUFFER, (ALint)buffer);
 	}
 
-	alSourcePlay(_source);
+	alSourcePlay(source);
 }
 
 void SoundSource::loop(ALint state)
 {
-	alGetSourcei(_source, AL_SOURCE_STATE, &state);
+	alGetSourcei(source, AL_SOURCE_STATE, &state);
 }

@@ -1,5 +1,6 @@
 #include "../include/thread_manager.h"
 
+#include <future>
 
 ThreadManager::ThreadManager(Project& project) 
 {

@@ -21,11 +21,11 @@ public:
 	void update_pitch(float value);
 
 private:
-	ALuint _source;
-	float _gain = 1.0f;
-	float _pitch = 1.0f;
-	bool _is_loop_sound = true;
-	ALuint _buffer = 0;
+	ALuint source;
+	float gain = 1.0f;
+	float pitch = 1.0f;
+	bool is_loop_sound = true;
+	ALuint buffer = 0;
 };
 
 

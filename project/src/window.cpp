@@ -16,7 +16,7 @@ void Window::framebuffer_size_callback(GLFWwindow* window, int width, int height
     window_height = height;
 }
 
-Window::Window() {
+Window::Window() : window() {
     
 }
 

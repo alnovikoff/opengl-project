@@ -12,8 +12,8 @@ private:
 	SoundDevice();
 	~SoundDevice();
 
-	ALCdevice* _alc_device;
-	ALCcontext* _alc_context;
+	ALCdevice* alc_device;
+	ALCcontext* alc_context;
 
 };
 

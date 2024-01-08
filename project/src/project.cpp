@@ -20,12 +20,17 @@
 
 #include <vector>
 
+#include <thread>
+#include <chrono>
+
 glm::mat4 transform = glm::mat4(1.0f);
 
 float delta_time = 0.0f;
 float last_frame = 0.0f;
 
 Camera camera(glm::vec3(0.0f, 10.0f, 0.0f));
+
+std::condition_variable cv;
 
 void Project::initialize()
 {
@@ -95,15 +100,16 @@ void Project::run_render()
 	glm::vec3 lamp_light1_position = lamp_light1_model.get_position();
 	glm::vec3 lamp_light2_position = lamp_light2_model.get_position();
 	float yPos = ufo_model.get_position().y;
-	float elapsedTime = 0.0f;
+	elapsedTime = 0.0f;
 
 	// Light attenuation setup
 	float constant = 1.0f; 
 	float linear = 0.005f; 
 	float quadratic = 0.005f;
-	
+	std::mutex mut2;
 	while (!window.should_close())
 	{
+		mut2.lock();
 		// Time
 		double current_time = glfwGetTime();
 		delta_time = current_time - last_frame;
@@ -306,14 +312,13 @@ void Project::run_render()
 		modelMatrix = glm::translate(model, glm::vec3(-25, 0, 12));
 		shader_model.set_mat4("model", modelMatrix);
 		//glRotatef(45.0f, 0.0f, 1.0f, 0.0f); // apply rotation
-		// draw the object here
-		bush_model2.draw(shader_model);
 		//-------
-		//bush_model2.draw(shader_model);
+		bush_model2.draw(shader_model);
 		glDepthMask(GL_TRUE);
 		glDisable(GL_BLEND);
 
     window.new_frame();
+		mut2.unlock();
 	}
 	// Delete shader programs after termination of render loop
 	glDeleteProgram(skybox_shader.id);
@@ -334,11 +339,21 @@ void Project::run_sound()
 	
 	SoundSource source1;
 	source1.play(sound1);
+	std::mutex mutex_win;
 
+	float minPitch = 3.0;
+	float maxPitch = 0.5;
+	float pitchRange = maxPitch - minPitch;
+	float pitchSpeed = 0.6;
+	
 	while (!window.should_close())
 	{
-
+		mutex_win.lock();
+		// Update pitch
+		float newPitch = minPitch + pitchRange / 2.0f * (sin(elapsedTime * pitchSpeed) + 1.0f);
+		source1.update_pitch(newPitch);
 		source1.loop(state);
+		mutex_win.unlock();
 	}
 }
 
