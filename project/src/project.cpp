@@ -43,7 +43,6 @@ void Project::initialize()
 
 	window.set_parameters();
 	stbi_set_flip_vertically_on_load(true);
-	//glDepthRange(0 ,30);
 }
 
 
@@ -114,8 +113,6 @@ void Project::run_render()
 		// Input
     process_input(delta_time);
 
-		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		window.update();
 

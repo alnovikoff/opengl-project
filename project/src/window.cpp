@@ -16,7 +16,7 @@ void Window::framebuffer_size_callback(GLFWwindow* window, int width, int height
     window_height = height;
 }
 
-Window::Window() : window(nullptr) {
+Window::Window() {
     
 }
 
@@ -31,13 +31,9 @@ bool Window::init()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-    // glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR, 4 );
-    // glfwWindowHint( GLFW_CONTEXT_VERSION_MINOR, 5 );
-    // // If you want the opengl debug context from 4.3 onwards, which you do:
-    // glfwWindowHint( GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE );
-    // glfwWindowHint( GLFW_CLIENT_API, GLFW_OPENGL_API );
-    // glfwWindowHint( GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint( GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE );
+    glfwWindowHint( GLFW_CLIENT_API, GLFW_OPENGL_API );
+    glfwWindowHint( GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 #ifdef __APPLE__
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);

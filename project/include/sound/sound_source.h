@@ -23,7 +23,7 @@ public:
 private:
 	ALuint _source;
 	float _gain = 1.0f;
-		float _pitch = 1.0f;
+	float _pitch = 1.0f;
 	bool _is_loop_sound = true;
 	ALuint _buffer = 0;
 };
