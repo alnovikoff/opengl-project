@@ -1,6 +1,6 @@
 # opengl-project
 
-# Project features
+  Project features
   - Blending
   - Cone light
   - Light attenuation
