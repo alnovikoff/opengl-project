@@ -142,7 +142,7 @@ void Project::run_render()
 		// models
 		shader_model.activate();
 
-		/* LIGHTING RENDER */
+		/* LIGHTING SETUP */
 		// Global light--------------------------------
 		GLint lightDirLoc = glGetUniformLocation(shader_model.id, "light.direction");
 		GLint viewPosLoc = glGetUniformLocation(shader_model.id, "viewPos");
@@ -307,11 +307,11 @@ void Project::run_render()
 		bush_model.draw(shader_model);
 		// Chnaging position of object
 		// use prev with anim
-		//modelMatrix += glm::translate(model, glm::vec3(-235, 0, 12));
+		//modelMatrix += glm::translate(model, glm::vec3(-35, 0, 12));
 		// define new
 		modelMatrix = glm::translate(model, glm::vec3(-25, 0, 12));
+		modelMatrix = glm::rotate(modelMatrix, glm::radians(25.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		shader_model.set_mat4("model", modelMatrix);
-		//glRotatef(45.0f, 0.0f, 1.0f, 0.0f); // apply rotation
 		//-------
 		bush_model2.draw(shader_model);
 		glDepthMask(GL_TRUE);

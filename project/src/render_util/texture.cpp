@@ -11,7 +11,6 @@ void Texture::texture_from_file(const char *path, const std::string &directory)
 	std::string filename = std::string(path);
 	filename = directory + '/' + filename;
 
-	//unsigned int id;
 	glGenTextures(1, &id);
 
 	int width, height, nrComponents;
