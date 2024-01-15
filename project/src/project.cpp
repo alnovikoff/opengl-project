@@ -106,6 +106,7 @@ void Project::run_render()
 	float constant = 1.0f; 
 	float linear = 0.005f; 
 	float quadratic = 0.005f;
+	glm::mat4 modelMatrix;
 	std::mutex mut2;
 	while (!window.should_close())
 	{
@@ -273,7 +274,7 @@ void Project::run_render()
 		shader_env_map.set_mat4("projection", projection);
 		shader_env_map.set_mat4("view", view);
 		yPos -= sin(elapsedTime * 2.0f) * -7.0f * delta_time;
-		glm::mat4 modelMatrix = glm::translate(model, glm::vec3(0.0f, yPos, 0.0f));
+		modelMatrix = glm::translate(model, glm::vec3(0.0f, yPos, 0.0f));
 		shader_env_map.set_mat4("model", modelMatrix);
 		glUniform3f(glGetUniformLocation(shader_env_map.id, "cameraPos"), _camera_pos.x, _camera_pos.y, _camera_pos.z);
 		glUniform1i(glGetUniformLocation(shader_env_map.id, "cubemap"), 0);
@@ -309,8 +310,13 @@ void Project::run_render()
 		// use prev with anim
 		//modelMatrix += glm::translate(model, glm::vec3(-35, 0, 12));
 		// define new
+		// translate
 		modelMatrix = glm::translate(model, glm::vec3(-25, 0, 12));
+		// rotate
+		// new transformation is multiplied with the existing matri
 		modelMatrix = glm::rotate(modelMatrix, glm::radians(25.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		// scale
+		//modelMatrix = glm::scale(modelMatrix, glm::vec3(1.0f, 2.0f, 1.0f));
 		shader_model.set_mat4("model", modelMatrix);
 		//-------
 		bush_model2.draw(shader_model);
@@ -324,7 +330,8 @@ void Project::run_render()
 	glDeleteProgram(skybox_shader.id);
 	glDeleteProgram(shader_model.id);
 	glDeleteProgram(shader_env_map.id);
-
+	glDeleteProgram(light_shader.id);
+	
 	glfwTerminate();
 }
 

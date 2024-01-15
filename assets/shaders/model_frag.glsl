@@ -1,11 +1,13 @@
 #version 330 core
 
+// Material structure
 struct Material
 {
     sampler2D diffuse;
     float shininess;
 };
 
+// "Global light" structure
 struct Light 
 {
     vec3 direction;
@@ -14,6 +16,7 @@ struct Light
     vec3 specular;
 };
 
+// Spotlight structure
 struct Spotlight
 {
     vec3 position;
@@ -33,15 +36,16 @@ in vec3 Normal;
 in vec2 TexCoords;
 
 uniform vec3 viewPos;
-uniform Light light;
+uniform Light light; 
 uniform Spotlight spotlight[4];
 uniform Material material;
 uniform float alpha;
 
 void main()
 {
-    // Apply alpha blending
+    // sample diffuse texture
     vec4 texColor = texture(material.diffuse, TexCoords);
+    // alpha to control transparency
     vec4 blendedColor = vec4(texColor.rgb, texColor.a * alpha);
 
     // Ambient
@@ -50,7 +54,9 @@ void main()
     // Diffuse from directional light
     vec3 norm = normalize(Normal);
     vec3 lightDir = normalize(-light.direction);
+    // Lambertian diffuse calculation
     float diffDirectional = max(dot(norm, lightDir), 0.0);
+    // Apply light
     vec3 diffuseDirectional = light.diffuse * diffDirectional * blendedColor.rgb;
 
     // Initialize the final color outside the loop
@@ -68,6 +74,7 @@ void main()
         // Specular
         vec3 viewDir = normalize(viewPos - FragPos);
         vec3 reflectDir = reflect(-spotLightDir, norm);
+        //  Phong specular calculation
         float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
         vec3 specular = spotlight[i].specular * (spec * vec3(1.0));
 
